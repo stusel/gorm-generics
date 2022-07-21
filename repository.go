@@ -57,3 +57,19 @@ func (r *GormRepository[M, E]) Find(ctx context.Context, specification Specifica
 
 	return result, nil
 }
+
+func (r *GormRepository[M, E]) FindAll(ctx context.Context) ([]E, error) {
+	var models []M
+	err := r.db.Find(&models).Error
+	if err != nil {
+		return nil, err
+	}
+
+	result := make([]E, 0, len(models))
+	for _, row := range models {
+		result = append(result, row.ToEntity())
+	}
+
+	return result, nil
+
+}
